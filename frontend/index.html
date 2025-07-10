@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel de Tráfego</title>
+</head>
+<body>
+  <h1>Gerador de Link Seguro</h1>
+  <input id="url" placeholder="Cole seu link aqui" size="50" />
+  <button onclick="gerar()">Gerar Link</button>
+  <pre id="resultado"></pre>
+  <h2>Estatísticas:</h2>
+  <pre id="stats"></pre>
+
+  <script>
+    async function gerar() {
+      const url = document.getElementById('url').value;
+      const res = await fetch('/api/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      });
+      const data = await res.json();
+      document.getElementById('resultado').textContent = data.short;
+      atualizarStats();
+    }
+
+    async function atualizarStats() {
+      const res = await fetch('/api/stats');
+      const stats = await res.json();
+      document.getElementById('stats').textContent = JSON.stringify(stats, null, 2);
+    }
+
+    atualizarStats();
+  </script>
+</body>
+</html>
